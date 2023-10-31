@@ -8,7 +8,7 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
-        $us = new \App\Models\Usuarios\Usuarios();
+        $us = new \App\Models\Usuarios\UsuariosModel();
 
         // Array de usuarios
         $usuarios = [
