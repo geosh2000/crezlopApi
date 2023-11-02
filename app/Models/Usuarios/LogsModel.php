@@ -47,10 +47,10 @@ class LogsModel extends Model
         return $ip;
     }
 
-    public function log( $user_id, $logType = 'login' ){
+    public function log( $user_id, $logType = 'login', $ip = null ){
         $this->insert([
             'usuario_id' => $user_id,
-            'ip' => $this->getIpAddress(),
+            'ip' => $ip == null ? $this->getIpAddress() : $ip,
             'user_agent' => $_SERVER['HTTP_USER_AGENT'],
             'fecha' => date('Y-m-d H:i:s'),
             'accion' => $logType,

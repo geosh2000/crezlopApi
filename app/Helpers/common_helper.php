@@ -48,5 +48,35 @@
 
     }
 
+    function getTokenData(){
+        
+        // Obtiene el token de la cabecera
+        $request = service('request');
+        $token = $request->getServer('HTTP_AUTHORIZATION');
+
+        // Valida que el token no esté vacío y que comience con la palabra "Bearer "
+        if ( empty($token) || !str_starts_with($token, 'Bearer ') ) {
+            return false;
+        }
+
+        // Obtiene el bearer token del encabezado, quitando la palabra "Bearer " del inicio
+        $bearerToken = str_replace('Bearer ', '', $token);
+        
+        // Usa el encrypter de CI4 para decodificar el token. hace un try catch del decrypt. Si falla, devuelve un error
+        try {
+            $tokenData = \Config\Services::encrypter()->decrypt($bearerToken);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        // Valida que el token decodificado sea un json_encoded en formato texto y lo convierte a objeto. Si no es un json, devuelve un error
+        $tokenData = json_decode($tokenData, true);
+        if ( !is_array($tokenData) ) {
+            return false;
+        }
+
+        return $tokenData;
+    }
+
 
 ?>

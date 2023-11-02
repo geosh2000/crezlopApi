@@ -8,6 +8,8 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 helper(['common']);
 
+date_default_timezone_set('America/Cancun');
+
 class BearerTokenFilter implements FilterInterface
 {
     /**
@@ -32,7 +34,7 @@ class BearerTokenFilter implements FilterInterface
 
         // Valida que el token no esté vacío y que comience con la palabra "Bearer "
         if ( empty($token) || !str_starts_with($token, 'Bearer ') ) {
-            gg_response(401, [ 'error' => true, 'msg' => 'Token inválido' ] );
+            gg_response(401, [ 'error' => true, 'msg' => 'Invalid Token' ] );
         }
 
         // Obtiene el bearer token del encabezado, quitando la palabra "Bearer " del inicio
@@ -40,35 +42,56 @@ class BearerTokenFilter implements FilterInterface
         
         // Usa el encrypter de CI4 para decodificar el token. hace un try catch del decrypt. Si falla, devuelve un error
         try {
-            $tokenData = \Config\Services::encrypter()->decrypt($bearerToken);
+            $tokenDataJson = \Config\Services::encrypter()->decrypt($bearerToken);
         } catch (\Exception $e) {
-            gg_response(401, [ 'error' => true, 'msg' => 'Token inválido, no se pude descifrar' ] );
+            gg_response(401, [ 'error' => true, 'msg' => 'Invalid Token' ] );
         }
 
         // Valida que el token decodificado sea un json_encoded en formato texto y lo convierte a objeto. Si no es un json, devuelve un error
-        $tokenData = json_decode($tokenData, true);
+        $tokenData = json_decode($tokenDataJson, true);
         if ( !is_array($tokenData) ) {
-            gg_response(401, [ 'error' => true, 'msg' => 'Token inválido, información perdida' ] );
+            gg_response(401, [ 'error' => true, 'msg' => 'Invalid Token' ] );
         }
+
+        // Pasa el token a los controladores
+        $request->arguments['token'] = $tokenData;
 
         
-
         // Valida que el token tenga los datos necesarios
-        if ( !isset($tokenData['id']) || !isset($tokenData['email']) || !isset($tokenData['started_at'])) {
-            gg_response(401, [ 'error' => true, 'msg' => 'Token inválido, datos inconsistentes' ] );
+        if ( !isset($tokenData['id']) || !isset($tokenData['email']) || !isset($tokenData['started_at']) || !isset($tokenData['ip'])) {
+            gg_response(401, [ 'error' => true, 'msg' => 'Invalid Token' ] );
         }
 
-        // Valida que existan los datos de id, email y started_at en la sesion
-        $session = session();
-        if ( !$session->id || !$session->email || !$session->started_at ) {
-            gg_response(401, [ 'error' => true, 'msg' => 'Token inválido, inicia sesión nuevamente' ] );
+        // Obtiene de la base de datos la sesion activa con id, email e ip
+        $uas = new \App\Models\Usuarios\UsersActiveSessionsModel();
+        $activeSession = $uas
+            ->where('email', $tokenData['email'])
+            ->where('ip', $tokenData['ip'])
+            ->where('client', $_SERVER['HTTP_USER_AGENT'])
+            ->first();
+        
+        // Valida que exista la sesion activa
+        if ( !$activeSession ){
+            gg_response(401, [ 'error' => true, 'msg' => 'Invalid Token' ] );
         }
 
-        // Valida que el token sea válido comparandolo con el id, el email y el started_at de la sesion
-        if ( $tokenData['id'] != $session->id || $tokenData['email'] != $session->email || $tokenData['started_at'] != $session->started_at ) {
-            gg_response(401, [ 'error' => true, 'msg' => 'Token inválido, inicia sesión nuevamente' ] );
-        }
+        // Compara $activeSession con $tokenData
+        if ( $activeSession['email'] != $tokenData['email'] 
+             || $activeSession['ip'] != $tokenData['ip']
+             || $activeSession['client'] != $_SERVER['HTTP_USER_AGENT']
+             || $activeSession['session_started_at'] != date('Y-m-d H:i:s', $tokenData['started_at'])) {
 
+            $result = [
+                'email' => $activeSession['email'] != $tokenData['email'],
+                'ip' => $activeSession['ip'] != $tokenData['ip'],
+                'client' => $activeSession['client'] != $_SERVER['HTTP_USER_AGENT'],
+                'session_started_at' => $activeSession['session_started_at'] != date('Y-m-d H:i:s', $tokenData['started_at']),
+                'activeSession' => $activeSession['session_started_at'],
+                'tokenData' => date('Y-m-d H:i:s', $tokenData['started_at']),
+            ];
+
+            gg_response(401, [ 'error' => true, 'msg' => 'Invalid Token', 'debug' => $result ] );
+        }
     }
 
     /**

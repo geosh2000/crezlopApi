@@ -27,7 +27,7 @@ class Cookie extends BaseConfig
      *
      * @var DateTimeInterface|int|string
      */
-    public $expires = 0;
+    public $expires = 86400;
 
     /**
      * --------------------------------------------------------------------------
@@ -45,7 +45,7 @@ class Cookie extends BaseConfig
      *
      * Set to `.your-domain.com` for site-wide cookies.
      */
-    public string $domain = '';
+    public string $domain = 'localhost:8888';
 
     /**
      * --------------------------------------------------------------------------

@@ -28,6 +28,7 @@ class Filters extends BaseConfig
         'basicAuthFilter'  => \App\Filters\BasicAuthFilter::class,
         'timezone'  => \App\Filters\TimezoneFilter::class,
         'bearerToken' => \App\Filters\BearerTokenFilter::class,
+        'hasRole' => \App\Filters\Roles\HasRoleFilter::class,
     ];
 
     /**

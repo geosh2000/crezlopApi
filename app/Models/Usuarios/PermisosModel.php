@@ -13,7 +13,7 @@ class PermisosModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['rol_id', 'permiso_id', 'descripcion'];
+    protected $allowedFields    = ['nombre', 'descripcion', 'created_at', 'updated_at', 'deleted_at'];
 
     // Dates
     protected $useTimestamps = true;

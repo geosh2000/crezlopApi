@@ -93,22 +93,17 @@ class User extends Migration
         $this->forge->addField([
             'id' => [
                 'type' => 'INT',
-                'constraint' => 5,
+                'constraint' => 11,
                 'unsigned' => true,
                 'auto_increment' => true,
             ],
-            'role_id' => [
-                'type' => 'INT',
-                'constraint' => 5,
-                'unsigned' => true,
-            ],
-            'permiso' => [
+            'nombre' => [
                 'type' => 'VARCHAR',
-                'constraint' => '100',
+                'constraint' => 100,
+                'unique' => true,
             ],
             'descripcion' => [
-                'type' => 'VARCHAR',
-                'constraint' => '255',
+                'type' => 'TEXT',
             ],
             'created_at' => [
                 'type' => 'DATETIME',
@@ -123,9 +118,39 @@ class User extends Migration
                 'null' => true,
             ],
         ]);
-        $this->forge->addPrimaryKey('id');
-        $this->forge->addForeignKey('role_id', 'roles', 'id', 'CASCADE', 'CASCADE');
+
+        $this->forge->addKey('id', true);
         $this->forge->createTable('permisos');
+
+        // Crear tabla de permisos con los permisos que tendrá cada rol
+        $this->forge->addField([
+            'role_id' => [
+                'type' => 'INT',
+                'constraint' => 5,
+                'unsigned' => true,
+                'null' => false
+            ],
+            'permiso_id' => [
+                'type' => 'VARCHAR',
+                'constraint' => '100',
+                'unsigned' => true,
+                'null' => false
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+        ]);
+        $this->forge->addPrimaryKey(['role_id', 'permiso_id']);
+        $this->forge->createTable('permiso_role');
 
         // Ejecutar el seeder de usuarios
         $seeder->call('App\Database\Seeds\UserSeeder');
