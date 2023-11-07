@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Productos;
+namespace App\Models\Ventas;
 
 use CodeIgniter\Model;
 

@@ -29,6 +29,10 @@ class HasRoleFilter implements FilterInterface
     {
         $token = getTokenData();
 
+        if( !$token ){
+            gg_response(401, [ 'error' => true, 'msg' => 'Invalid Token' ] );
+        }
+
         $usuario = new \App\Models\Usuarios\UsuariosModel();
         $permisoRole = new \App\Models\Usuarios\PermisosRoleModel();
         $permisos = new \App\Models\Usuarios\PermisosModel();

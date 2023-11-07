@@ -9,7 +9,7 @@ class ProductosModel extends Model
     protected $table = 'productos_productos';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
-    protected $allowedFields = ['nombre', 'descripcion', 'margen', 'unidad_de_medida'];
+    protected $allowedFields = ['nombre', 'descripcion', 'margen', 'unidad_de_medida','inputs'];
     protected $useTimestamps = true;
     protected $useSoftDeletes = true;
 }

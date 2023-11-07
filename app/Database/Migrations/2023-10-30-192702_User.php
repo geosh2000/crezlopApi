@@ -37,10 +37,6 @@ class User extends Migration
         $this->forge->addPrimaryKey('id');
         $this->forge->createTable('roles');
 
-        // Ejecutar el seeder de roles
-        $seeder = \Config\Database::seeder();
-        $seeder->call('App\Database\Seeds\RolSeeder');
-
         // Crear tabla de usuarios
         $this->forge->addField([
             'id' => [
@@ -127,13 +123,11 @@ class User extends Migration
             'role_id' => [
                 'type' => 'INT',
                 'constraint' => 5,
-                'unsigned' => true,
                 'null' => false
             ],
             'permiso_id' => [
                 'type' => 'VARCHAR',
                 'constraint' => '100',
-                'unsigned' => true,
                 'null' => false
             ],
             'created_at' => [
@@ -152,6 +146,10 @@ class User extends Migration
         $this->forge->addPrimaryKey(['role_id', 'permiso_id']);
         $this->forge->createTable('permiso_role');
 
+        // Ejecutar el seeder de roles
+        $seeder = \Config\Database::seeder();
+        $seeder->call('App\Database\Seeds\RolSeeder');
+
         // Ejecutar el seeder de usuarios
         $seeder->call('App\Database\Seeds\UserSeeder');
 
@@ -163,5 +161,6 @@ class User extends Migration
         $this->forge->dropTable('usuarios');
         $this->forge->dropTable('roles');
         $this->forge->dropTable('permisos');
+        $this->forge->dropTable('permiso_role');
     }
 }

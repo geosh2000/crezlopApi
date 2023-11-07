@@ -78,5 +78,21 @@
         return $tokenData;
     }
 
+    if (!function_exists('sanitize_formula')) {
+        function sanitize_formula($formula) {
+            // Validación de la fórmula (permitiendo caracteres adicionales como '?', ':', y '[' ']', además de letras, números y operadores matemáticos)
+            // if (preg_match('/^[a-zA-Z0-9\s\.\*\+\-\/\(\)\[\]:?]+$/', $formula)) {
+                // Escapar comillas simples y dobles
+                $formula = str_replace("'", "\'", $formula);
+                $formula = str_replace('"', '\"', $formula);
+    
+                return $formula;
+            // } else {
+            //     return false; // Fórmula no válida
+            // }
+        }
+    }
+    
+
 
 ?>

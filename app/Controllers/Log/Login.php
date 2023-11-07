@@ -158,4 +158,8 @@ class Login extends BaseController
         // Devuelve los datos de la sesion
         gg_response(200, [ 'error' => false, 'msg' => 'Datos de la sesión', 'data' => $activeSession ]);
     }
+
+    function tokenCkeck(){
+        gg_response(200, [ 'error' => false, 'msg' => 'Token válido' ] );
+    }
 }

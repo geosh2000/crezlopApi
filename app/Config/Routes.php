@@ -13,17 +13,27 @@ $routes->group('login', function($routes){
     $routes->post('/', 'Log\Login::login', ['as' => 'login.login']);
     $routes->get('out', 'Log\Login::logout', ['as' => 'login.logout']);
     $routes->get('show', 'Log\Login::show', ['as' => 'login.show']);
+    $routes->post('checkAuthMod', 'Log\Sessions::moduleGrant', ['as' => 'sessions.moduleGrant']);
 });
 
 // Rutas protegidas por BearerToken
 $routes->group('auth', ['filter' => 'bearerToken'], function($routes){
+    $routes->get('check', 'Log\Login::tokenCheck', ['as' => 'auth.check']);
     $routes->get('test', 'Test::index', ['as' => 'test.index']);
-    $routes->get('show', 'Log\Login::show', ['as' => 'auth.show']);
+    // $routes->get('show', 'Log\Login::show', ['as' => 'auth.show', 'filter' => 'hasRole:sessions_show_all']);
+    $routes->get('show', 'Log\Login::show', ['as' => 'auth.show', 'filter' => 'hasRole:sessions_show_all']);
+
+
+    // Inventarios
+    $routes->group('inventario', function($routes){
+        $routes->post('quoteDetail', 'Products\Inventario::quoteDetail', ['as' => 'quote.detail', 'filter' => 'hasRole:quotes_detailed']);
+    });
 });
 
 // Rutas test
 $routes->group('test', function($routes){
     $routes->get('showUsers', 'Log\Sessions::showUsers', ['as' => 'sessions.showUsers', 'filter' => 'hasRole:sessions_show_all']);
+    $routes->get('testClients', 'Products\Test::index');
 });
 
 // $routes->group('dashboard', ['filter' => 'DashboardFilter'], function($routes){

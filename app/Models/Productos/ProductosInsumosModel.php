@@ -9,7 +9,7 @@ class ProductosInsumosModel extends Model
     protected $table = 'productos_productos_insumos';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
-    protected $allowedFields = ['id_producto', 'id_insumo', 'cantidad'];
+    protected $allowedFields = ['id_producto', 'id_insumo', 'formula', 'orden'];
 
     // Definir las relaciones como claves foráneas
     protected $belongsTo = [
