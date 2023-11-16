@@ -4,8 +4,6 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 
-// Carga el helper common
-helper(['common']);
 
 class Test extends BaseController
 {

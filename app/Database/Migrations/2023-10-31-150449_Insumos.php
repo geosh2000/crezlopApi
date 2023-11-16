@@ -4,14 +4,12 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class Productos extends Migration
+class Insumos extends Migration
 {
     public function up()
     {
 
-        
-
-        // Tabla "productos"
+        // Tabla "insumos"
         $this->forge->addField([
             'id' => [
                 'type' => 'INT',
@@ -22,20 +20,11 @@ class Productos extends Migration
             'nombre' => [
                 'type' => 'VARCHAR',
                 'constraint' => 255,
-            ],
-            'descripcion' => [
-                'type' => 'TEXT',
-            ],
-            'margen' => [
-                'type' => 'DECIMAL',
-                'constraint' => '10,2',
+                'unique' => true,
             ],
             'unidad_de_medida' => [
                 'type' => 'VARCHAR',
                 'constraint' => 50,
-            ],
-            'inputs' => [
-                'type' => 'TEXT',
             ],
             'created_at' => [
                 'type' => 'DATETIME',
@@ -50,11 +39,15 @@ class Productos extends Migration
             ],
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->createTable('productos_productos');
+        $this->forge->createTable('productos_insumos');
+
+        
+
     }
 
     public function down()
     {
-        $this->forge->dropTable('productos_productos');
+        // Elimina todas las tablas si es necesario
+        $this->forge->dropTable('productos_insumos');
     }
 }

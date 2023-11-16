@@ -5,7 +5,6 @@ namespace App\Controllers\Log;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\Request;
 
-helper(['common']);
 
 class Sessions extends BaseController
 {

@@ -18,7 +18,7 @@ class VentaModel extends Model
             'foreign_key' => 'id_producto',
         ],
         'vendedor' => [
-            'model' => 'VendedoresModel',
+            'model' => 'App\Models\Usuarios\UsuariosModel',
             'foreign_key' => 'id_vendedor',
         ],
         'factura' => [

@@ -26,11 +26,11 @@ class UsersActiveSessions extends Migration
           ],
           'session_started_at' => [
               'type' => 'DATETIME',
-              'null' => true,
+              'null' => false,
           ],
           'session_ends_at' => [
               'type' => 'DATETIME',
-              'null' => true,
+              'null' => false,
           ],
       ]);
 

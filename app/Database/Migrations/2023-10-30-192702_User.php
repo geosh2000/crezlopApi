@@ -20,6 +20,7 @@ class User extends Migration
             'nombre' => [
                 'type' => 'VARCHAR',
                 'constraint' => '100',
+                'unique' => true,
             ],
             'created_at' => [
                 'type' => 'DATETIME',
@@ -61,6 +62,14 @@ class User extends Migration
             'password' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255',
+            ],
+            'isInvestor' => [
+                'type' => 'BOOLEAN',
+                'default' => false,
+            ],
+            'isSeller' => [
+                'type' => 'BOOLEAN',
+                'default' => false,
             ],
             'role_id' => [
                 'type' => 'INT',
@@ -158,9 +167,10 @@ class User extends Migration
 
     public function down()
     {
-        $this->forge->dropTable('usuarios');
-        $this->forge->dropTable('roles');
-        $this->forge->dropTable('permisos');
         $this->forge->dropTable('permiso_role');
+        $this->forge->dropTable('permisos');
+        $this->forge->dropTable('roles');
+        $this->forge->dropTable('usuarios');
     }
 }
+

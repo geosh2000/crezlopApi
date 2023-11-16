@@ -4,8 +4,6 @@ namespace App\Controllers\Log;
 
 use App\Controllers\BaseController;
 
-// Carga el helper common
-helper(['common']);
 
 class Login extends BaseController
 {
@@ -87,6 +85,7 @@ class Login extends BaseController
 
             // Define array para localstorage de aplicación solicitante
             $localStorage = [
+                'userId' => $user->id,
                 'nombre' => $user->nombre,
                 'apellido' => $user->apellido,
                 'email' => $user->email,
@@ -104,21 +103,25 @@ class Login extends BaseController
 
     public function logout(){
 
-        helper('cookie');
+        $token = getTokenData();
 
-        // Revisa si existe una cookie activa
-        if ( !get_cookie('sessionCookie') ){
-            gg_die('No hay una sesión activa');
+        if( !$token ){
+            gg_die( 'No hay una sesión activa' );
         }
 
-        $session = json_decode(get_cookie('sessionCookie'));
+        $uas = new \App\Models\Usuarios\UsersActiveSessionsModel();
+
+        $activeSession = $uas
+            ->where('email', $token['email'])
+            ->where('ip', $token['ip'])
+            ->where('client', $_SERVER['HTTP_USER_AGENT']);
+        
+        // Elimina el registro de activeSession
+        $activeSession->delete();
 
         // Crea un registro de log de logout
         $lm = new \App\Models\Usuarios\LogsModel();
-        $lm->log( $session->id, 'logout' );
-
-        // Destruye la cookie
-        delete_cookie('sessionCookie');
+        $lm->log( $token['id'], 'logout', $token['ip'] );
 
         // Devuelve un mensaje de éxito
         gg_response(200, [ 'error' => false, 'msg' => 'Sesión cerrada' ] );

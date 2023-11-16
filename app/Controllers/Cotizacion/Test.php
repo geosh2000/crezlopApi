@@ -4,7 +4,6 @@ namespace App\Controllers\Products;
 
 use App\Controllers\BaseController;
 
-helper(['common']);
 
 class Test extends BaseController
 {

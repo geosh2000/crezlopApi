@@ -4,6 +4,8 @@ namespace App\Database\Seeds;
 
 use CodeIgniter\Database\Seeder;
 
+helper('common');
+
 class RolSeeder extends Seeder
 {
     public function run()
@@ -26,7 +28,7 @@ class RolSeeder extends Seeder
         ];
 
         // Using Query Builder
-        $sm->insertBatch($roles);
+        saveIfDup( $sm, $roles, ['nombre'] );
 
         $permisos = [
             [
@@ -45,42 +47,65 @@ class RolSeeder extends Seeder
                 'nombre' => 'quotes_detailed',
                 'descripcion' => 'Detalle pieza por pieza de insumos para una cotizacion'
             ],
+            [
+                'nombre' => 'invoices_list',
+                'descripcion' => 'Muestra un listado de las facturas'
+            ],
+            [
+                'nombre' => 'show_invoices_detail',
+                'descripcion' => 'Muestra el detalle completo de las facturas'
+            ],
+            [
+                'nombre' => 'admin_basic',
+                'descripcion' => 'Funciones básicas de administrador'
+            ],
         ];
 
-        $pm->insertBatch($permisos);
+        saveIfDup( $pm, $permisos, ['nombre'] );
 
         $permiso_role = [
             [
-                'role_id' => 1,
-                'permiso_id' => 1
+                'role' => 'Super Administrador',
+                'permisos' => [
+                        'sessions_show_all',
+                        'user_modify_role',
+                        'app_basic',
+                        'quotes_detailed',
+                        'show_invoices_detail',
+                        'invoices_list',
+                        'admin_basic',
+                    ]
             ],
             [
-                'role_id' => 1,
-                'permiso_id' => 2
+                'role' => 'Administrador',
+                'permisos' => [
+                        'app_basic',
+                        'quotes_detailed',
+                        'show_invoices_detail',
+                        'invoices_list',
+                        'admin_basic',
+                    ]
             ],
             [
-                'role_id' => 1,
-                'permiso_id' => 3
-            ],
-            [
-                'role_id' => 1,
-                'permiso_id' => 4
-            ],
-            [
-                'role_id' => 2,
-                'permiso_id' => 3
-            ],
-            [
-                'role_id' => 2,
-                'permiso_id' => 4
-            ],
-            [
-                'role_id' => 3,
-                'permiso_id' => 3
+                'role' => 'Usuario',
+                'permisos' => [
+                        'app_basic',
+                    ]
             ],
         ];
 
-        $prm->insertBatch($permiso_role);
-        
+        $permisoBatch = [];
+        foreach( $permiso_role as $permiso => $pr ){
+            foreach( $pr['permisos'] as $perm => $p ){
+                array_push( $permisoBatch, [
+                    'role_id' => $sm->where('nombre', $pr['role'])->first()['id'],
+                    'permiso_id' => $pm->where('nombre', $p)->first()['id'] ?? 100,
+                ]);
+            }
+        }
+
+        // $prm->insertBatch($permisoBatch);
+        saveIfDup( $prm, $permisoBatch, ['role_id', 'permiso_id'] );
+
     }
 }

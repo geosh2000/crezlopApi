@@ -24,9 +24,21 @@ $routes->group('auth', ['filter' => 'bearerToken'], function($routes){
     $routes->get('show', 'Log\Login::show', ['as' => 'auth.show', 'filter' => 'hasRole:sessions_show_all']);
 
 
-    // Inventarios
-    $routes->group('inventario', function($routes){
-        $routes->post('quoteDetail', 'Products\Inventario::quoteDetail', ['as' => 'quote.detail', 'filter' => 'hasRole:quotes_detailed']);
+    // Cotizaciones
+    $routes->group('quotes', function($routes){
+        $routes->post('material', 'Cotizacion\Quotes::quoteDetail', ['as' => 'quote.detail', 'filter' => 'hasRole:quotes_detailed']);
+    });
+
+    // Productos
+    $routes->group('products', function($routes){
+        $routes->get('list', 'Productos\Productos::list', ['as' => 'products.list']);
+    });
+
+    // Facturas
+    $routes->group('facturas', function($routes){
+        $routes->get('detail', 'Ventas\Facturas::showFactura/true', ['as' => 'facturas.detail', 'filter' => 'hasRole:show_invoices_detail']);
+        $routes->get('show', 'Ventas\Facturas::showFactura', ['as' => 'facturas.show', 'filter' => 'hasRole:invoices_list']);
+        $routes->get('list', 'Ventas\Facturas::list', ['as' => 'facturas.list', 'filter' => 'hasRole:invoices_list']);
     });
 });
 

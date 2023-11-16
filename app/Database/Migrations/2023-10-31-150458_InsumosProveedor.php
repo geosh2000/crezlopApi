@@ -4,14 +4,11 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class Productos extends Migration
+class InsumosProveedor extends Migration
 {
     public function up()
     {
 
-        
-
-        // Tabla "productos"
         $this->forge->addField([
             'id' => [
                 'type' => 'INT',
@@ -19,22 +16,21 @@ class Productos extends Migration
                 'unsigned' => true,
                 'auto_increment' => true,
             ],
-            'nombre' => [
+            'id_insumo' => [
+                'type' => 'INT',
+                'constraint' => 5,
+                'unsigned' => true,
+            ],
+            'id_proveedor' => [
+                'type' => 'INT',
+                'constraint' => 5,
+                'unsigned' => true,
+            ],
+            'modelo_proveedor' => [
                 'type' => 'VARCHAR',
                 'constraint' => 255,
             ],
             'descripcion' => [
-                'type' => 'TEXT',
-            ],
-            'margen' => [
-                'type' => 'DECIMAL',
-                'constraint' => '10,2',
-            ],
-            'unidad_de_medida' => [
-                'type' => 'VARCHAR',
-                'constraint' => 50,
-            ],
-            'inputs' => [
                 'type' => 'TEXT',
             ],
             'created_at' => [
@@ -50,11 +46,15 @@ class Productos extends Migration
             ],
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->createTable('productos_productos');
+        $this->forge->addForeignKey('id_insumo', 'productos_insumos', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('id_proveedor', 'proveedores', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->createTable('productos_insumo_proveedor');
+
     }
 
     public function down()
     {
-        $this->forge->dropTable('productos_productos');
+        // Elimina todas las tablas si es necesario
+        $this->forge->dropTable('productos_insumo_proveedor');
     }
 }

@@ -641,6 +641,7 @@ class FacturasSeeder extends Seeder
             ];
 
             $vdm->insert($detail);
+            saveIfDup( $vdm, [$detail],['id_venta']);
         }
     }
 }

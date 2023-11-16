@@ -4,12 +4,12 @@ namespace App\Models\Productos;
 
 use CodeIgniter\Model;
 
-class InsumosModel extends Model
+class ComprasLoteModel extends Model
 {
-    protected $table = 'productos_insumos';
+    protected $table = 'compras_lote';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
-    protected $allowedFields = ['nombre', 'unidad_de_medida'];
+    protected $allowedFields = ['fecha_compra', 'factura', 'gasto_envio', 'gasto_transporte', 'monto_aduana', 'porcentaje_prorrateo' ];
     protected $useTimestamps = true;
     protected $useSoftDeletes = true;
 

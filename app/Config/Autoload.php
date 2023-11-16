@@ -66,7 +66,10 @@ class Autoload extends AutoloadConfig
      *
      * @var array<string, string>
      */
-    public $classmap = [];
+    public $classmap = [
+        'Inventario' => APPPATH . 'Libraries/Inventario/Inventario.php',
+        'Factura' => APPPATH . 'Libraries/Factura/Factura.php',
+    ];
 
     /**
      * -------------------------------------------------------------------

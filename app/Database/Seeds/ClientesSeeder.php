@@ -364,12 +364,5 @@ class ClientesSeeder extends Seeder
         // Inserta los datos en la tabla 'clientes'
         $this->db->table('clientes')->insertBatch($data);
 
-        // Tabla de vendedores
-        $vendedores = [
-            'nombre' => 'Vendedor Prueba',
-        ];
-
-        $vm = new \App\Models\Ventas\VendedoresModel();
-        $vm->insert($vendedores);
     }
 }

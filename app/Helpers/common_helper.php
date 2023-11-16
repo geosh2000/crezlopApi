@@ -1,5 +1,7 @@
 <?php
 
+    // ***** INICIO DE Respuestas
+
     function gg_response( $code, $data = [], $type = 'json' ){
 
         $response = \Config\Services::response();
@@ -33,20 +35,25 @@
         die();
     }
 
-    function ifEmpty( $data, $msg = null ){
+    function ifEmpty( $data, $msg = null, $returnFalse = false ){
 
         if( $msg == null ){
             $msg = "No se encontraron registros";
         }
 
         if( empty($data) ){
-            $json = array(
-                "msg" => $msg
-            );
-            gg_response(400, $json);
+            if( $returnFalse ){
+                return false;
+            }
+            
+            gg_die( $msg );
         }
 
     }
+
+    // ***** FIN DE Respuestas
+
+    // ***** INICIO DE Validaciones
 
     function getTokenData(){
         
@@ -78,6 +85,10 @@
         return $tokenData;
     }
 
+    // ***** FIN DE Validaciones
+
+    // ***** INICIO DE Funciones de ayuda
+
     if (!function_exists('sanitize_formula')) {
         function sanitize_formula($formula) {
             // Validación de la fórmula (permitiendo caracteres adicionales como '?', ':', y '[' ']', además de letras, números y operadores matemáticos)
@@ -92,7 +103,73 @@
             // }
         }
     }
-    
 
+    function sanitize_ammount($amount) {
+        return round($amount * 100 / 100, 2);
+    }
+
+    // ***** FIN DE Funciones de ayuda
+
+    // ***** INICIO DE Funciones DB
+
+    function saveIfDup( $model, $arr, $keys = [ 'id' ] ){
+        foreach($arr as $el){
+            // Verifica si el registro ya existe en la base de datos
+            $model->where($keys[0], $el[$keys[0]]);
+            
+            if( count($keys) > 1 ){
+                foreach( $keys as $key => $k ){
+                    if( $key > 0 ){
+                        $model->where($k, $el[$k]);
+                    }
+                }
+            }
+            
+            $existente = $model->first();
+
+            // Inserta el registro solo si no existe previamente
+            if (!$existente) {
+                $model->insert($el);
+            }
+        }    
+    }
+
+    function noTimestamps( $arr ){
+        foreach( $arr as $k => $el ){
+            foreach( $el as $key => $value ){
+                if( $key == 'created_at' || $key == 'updated_at' || $key == 'deleted_at' ){
+                    unset( $arr[$k][$key] );
+                }
+            }
+        }
+
+        return $arr;
+    }
+
+    function exceptFields( $arr, $fields ){
+        foreach( $arr as $k => $el ){
+            foreach( $el as $key => $value ){
+                // ei $key es igual a alguno de los valores dentro de $fields, hace un unset
+                if( in_array($key, $fields) ){
+                    unset( $arr[$k][$key] );
+                }
+            }
+        }
+
+        return $arr;
+    }
+
+    function getId( $needle, $haystack, $key = 'id', $keyReturn = 'id' ){
+
+        $result = $haystack->where( $key, $needle )->first();
+
+        if( !$result ){
+            gg_die( 'No existe este producto' );
+        }
+
+        return $result[$keyReturn];
+    }
+
+    // ***** FIN DE Funciones DB
 
 ?>

@@ -113,7 +113,7 @@ class ProductosInsumosSeeder extends Seeder
             
         ];
 
-        $pi->insertBatch($insumos);
+        saveIfDup( $pi, $insumos, ['nombre'] );
 
         $productos = [
             [
@@ -121,7 +121,7 @@ class ProductosInsumosSeeder extends Seeder
                 'descripcion' => 'Puerta para comercio enrollable estilo español',
                 'margen' => 2,
                 'unidad_de_medida' => 'metro cuadrado',
-                'inputs' => 'alto,ancho,m2'
+                'inputs' => 'alto,ancho'
             ],
             ["nombre"=>"BARRA VEHICULAR DOBLE DIRECCIÓN","descripcion"=>"","margen"=>"1","unidad_de_medida"=>"","inputs"=>"largo,alto,m2"],
             ["nombre"=>"COMPONENTES","descripcion"=>"","margen"=>"1","unidad_de_medida"=>"","inputs"=>"largo,alto,m2"],
@@ -139,103 +139,108 @@ class ProductosInsumosSeeder extends Seeder
         $prod_ins = [
             [
                 'id_producto' => 1,
-                'id_insumo' => 1,
+                'id_insumo' => "Patin",
                 'orden' => 20,
                 'formula' => "ceil((\$insumos['Acero de lama'] / \$medidas['ancho']) * 2)"
             ],
             [
                 'id_producto' => 1,
-                'id_insumo' => 2,
+                'id_insumo' => "Remache",
                 'orden' => 30,
                 'formula' => "\$insumos['Patin']*2"
             ],
             [
                 'id_producto' => 1,
-                'id_insumo' => 3,
+                'id_insumo' => "Bombo",
                 'orden' => 40,
                 'formula' => "\$medidas['ancho'] <= 4 ? 2 : 3"
             ],
             [
                 'id_producto' => 1,
-                'id_insumo' => 4,
+                'id_insumo' => "Resorte",
                 'orden' => 50,
                 'formula' => "\$medidas['ancho'] <= 4 ? 2 : 3"
             ],
             [
                 'id_producto' => 1,
-                'id_insumo' => 5,
+                'id_insumo' => "Plato",
                 'orden' => 60,
                 'formula' => "2"
             ],
             [
                 'id_producto' => 1,
-                'id_insumo' => 6,
+                'id_insumo' => "Eje",
                 'orden' => 70,
                 'formula' => "1"
             ],
             [
                 'id_producto' => 1,
-                'id_insumo' => 7,
+                'id_insumo' => "Soporte",
                 'orden' => 80,
                 'formula' => "2"
             ],
             [
                 'id_producto' => 1,
-                'id_insumo' => 8,
+                'id_insumo' => "Cerradura",
                 'orden' => 90,
                 'formula' => "1"
             ],
             [
                 'id_producto' => 1,
-                'id_insumo' => 9,
+                'id_insumo' => "Carrilera",
                 'orden' => 100,
                 'formula' => "1"
             ],
             [
                 'id_producto' => 1,
-                'id_insumo' => 10,
+                'id_insumo' => "Armella",
                 'orden' => 110,
                 'formula' => "2"
             ],
             [
                 'id_producto' => 1,
-                'id_insumo' => 11,
+                'id_insumo' => "Planchuela",
                 'orden' => 120,
                 'formula' => "2"
             ],
             [
                 'id_producto' => 1,
-                'id_insumo' => 12,
+                'id_insumo' => "Tornillo M6 Cabeza lisa",
                 'orden' => 130,
                 'formula' => "6"
             ],
             [
                 'id_producto' => 1,
-                'id_insumo' => 13,
+                'id_insumo' => "Tornillo M8 2-1/2",
                 'orden' => 140,
                 'formula' => "4"
             ],
             [
                 'id_producto' => 1,
-                'id_insumo' => 14,
+                'id_insumo' => "Tornillo M8 1",
                 'orden' => 150,
                 'formula' => "8"
             ],
             [
                 'id_producto' => 1,
-                'id_insumo' => 15,
+                'id_insumo' => "Lama terminal",
                 'orden' => 160,
                 'formula' => "1"
             ],
             [
                 'id_producto' => 1,
-                'id_insumo' => 16,
+                'id_insumo' => "Acero de lama",
                 'orden' => 10,
                 'formula' => "ceil(ceil(\$medidas['alto'] * 100 / 9) * \$medidas['ancho'])"
             ],
         ];
 
-        $ppi->insertBatch($prod_ins);
+        $pi = new \App\Models\Productos\InsumosModel();
+        foreach($prod_ins as $key => $prod_in){
+            $prod_ins[$key]['id_insumo'] = $pi->where('nombre', $prod_in['id_insumo'])->first()['id'];
+        }
+
+        saveIfDup( $ppi, $prod_ins, ['id_producto', 'id_insumo'] );
 
     }
 }
